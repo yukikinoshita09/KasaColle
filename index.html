@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="忘れ物の傘を地域で循環させる貸出プロトタイプ" />
+    <title>KasaColle｜忘れ物傘の貸出プロトタイプ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section id="login-view" class="login-view" aria-labelledby="login-title">
+      <div class="login-panel">
+        <form id="login-form" class="login-card" novalidate>
+          <a class="brand login-brand" href="#" aria-label="KasaColle">
+            <span class="brand-mark" aria-hidden="true">☂</span>
+            <span>KasaColle</span>
+          </a>
+          <div class="login-heading">
+            <h1 id="login-title">ログイン</h1>
+            <p>IDとパスワードを入力してください。</p>
+          </div>
+          <label>ユーザーID<input id="login-id" name="id" autocomplete="username" required placeholder="IDを入力" /></label>
+          <label>パスワード<input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="パスワードを入力" /></label>
+          <p id="login-error" class="login-error" role="alert"></p>
+          <button class="submit-button login-button" type="submit">ログインする <span aria-hidden="true">→</span></button>
+          <aside class="demo-accounts" aria-label="デモ用アカウント">
+            <p>DEMO ACCOUNTS</p>
+            <button type="button" data-demo-login="user"><span>利用者</span><code>user / user</code></button>
+            <button type="button" data-demo-login="admin"><span>管理者</span><code>admin / admin</code></button>
+          </aside>
+        </form>
+      </div>
+    </section>
+
+    <div id="app-shell" hidden>
+      <div class="session-tools" aria-label="ログイン情報">
+        <span id="role-label" class="role-label"></span>
+        <button id="logout-button" class="logout-button" type="button">ログアウト</button>
+      </div>
+
+    <main>
+      <section id="user-view" class="view is-active" aria-labelledby="catalog-title">
+        <section id="umbrella-list" class="catalog shell" aria-labelledby="catalog-title">
+          <div class="section-heading catalog-heading">
+            <div>
+              <h2 id="catalog-title">忘れ物一覧</h2>
+            </div>
+          </div>
+          <div id="umbrella-grid" class="umbrella-grid" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section id="admin-view" class="view admin-view" aria-labelledby="admin-title">
+        <div class="admin-shell">
+          <header class="admin-heading">
+            <div>
+              <h1 id="admin-title">傘の管理</h1>
+            </div>
+            <p class="today" id="today-label"></p>
+          </header>
+
+          <div class="admin-columns">
+            <section class="panel registration-panel" aria-labelledby="register-title">
+              <div class="panel-heading">
+                <span class="panel-icon" aria-hidden="true">＋</span>
+                <h2 id="register-title">傘を登録する</h2>
+              </div>
+              <form id="registration-form">
+                <label>傘の名前<input id="umbrella-name" name="name" required placeholder="例：紺色の長傘" /></label>
+                <div class="form-row">
+                  <label>種類<select id="umbrella-type" name="type" required><option>長傘</option><option>ビニール傘</option><option>折りたたみ傘</option></select></label>
+                  <label>見つかった場所<input id="umbrella-location" name="location" required placeholder="例：1F ロビー" /></label>
+                </div>
+                <label>見つかった日<input id="umbrella-date" name="foundDate" type="date" required /></label>
+                <label class="upload-field">
+                  傘の写真
+                  <input id="umbrella-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
+                  <span class="upload-dropzone">
+                    <span id="upload-placeholder" class="upload-placeholder"><strong>＋ 写真をアップロード</strong><small>JPG・PNG・WebP</small></span>
+                    <img id="upload-preview" alt="アップロードする傘のプレビュー" hidden />
+                    <span id="change-photo" class="change-photo" hidden>写真を変更</span>
+                  </span>
+                </label>
+                <button class="submit-button" type="submit">この傘を登録する <span aria-hidden="true">→</span></button>
+              </form>
+            </section>
+
+            <section class="panel inventory-panel" aria-labelledby="inventory-title">
+              <div class="panel-heading inventory-heading">
+                <div><p class="eyebrow">INVENTORY</p><h2 id="inventory-title">登録済みの傘</h2></div>
+                <span id="inventory-count" class="count-pill"></span>
+              </div>
+              <div class="inventory-tabs" role="tablist" aria-label="傘の状態">
+                <button class="inventory-tab is-active" type="button" role="tab" aria-selected="true" data-admin-filter="forgotten">忘れ物</button>
+                <button class="inventory-tab" type="button" role="tab" aria-selected="false" data-admin-filter="lending">貸出</button>
+              </div>
+              <div id="admin-list" class="admin-list" aria-live="polite"></div>
+            </section>
+          </div>
+
+          <button id="reset-data" class="reset-button" type="button">デモデータを初期状態に戻す</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><p>KasaColle — 忘れ物を、街の小さな備えに。</p><p>Frontend prototype / Local storage</p></footer>
+
+    <dialog id="claim-dialog" class="claim-dialog">
+      <form method="dialog">
+        <button class="dialog-close" value="cancel" aria-label="閉じる">×</button>
+        <span class="dialog-icon" aria-hidden="true">☂</span>
+        <p class="eyebrow">OWNER CLAIM</p>
+        <h2>この傘をお探しですか？</h2>
+        <p id="claim-copy"></p>
+        <label>確認のためのメモ<textarea id="claim-note" placeholder="傘の特徴や、忘れたと思われる日時など"></textarea></label>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel">キャンセル</button>
+          <button id="confirm-claim" class="submit-button" value="default">持ち主として申告する</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>
